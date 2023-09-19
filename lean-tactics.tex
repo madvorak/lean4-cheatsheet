@@ -109,6 +109,7 @@ The effect of these parts is also in brackets in the right-hand column.
   \makecell[lt]{\lean{linarith} \\ \color{gray}\lean{import Mathlib.Tactic.Linarith}} & prove the goal by a linear combination of hypotheses (includes arguments based on transitivity) \\
   \makecell[lt]{\lean{ring} \\ \color{gray}\lean{import Mathlib.Tactic.Ring}} & prove the goal by combining the axioms of a commutative (semi)ring \\
   \makecell[lt]{\lean{exact?} \\ \color{gray}\lean{import Mathlib.Tactic.LibrarySearch}} & search for a single existing lemma which closes the goal, also using local hypotheses \\
+  \makecell[lt]{\lean{apply?} \\ \color{gray}\lean{import Mathlib.Tactic.LibrarySearch}} & search for theorems whose conclusion matches the current goal; suggest those that may be used with \lean{apply} in the current context \\
   \bottomrule
 \end{tabular}
 \end{center}
