@@ -31,7 +31,7 @@
  \large\textsc{Lean 4 Cheatsheet}
 \end{center}
 
-In the following table,
+In the following tables,
 \nom always refers to a name already known to Lean
 while \nv refers to a new name provided by the user;
 \expr designates an expression,
@@ -54,19 +54,17 @@ necessary import is written in gray.}
   \midrule
  $\forall$ (for all) & \lean{intro} \nv & \lean{apply} \expr or \lean{specialize} \nom \expr  \\
  $\exists$ (there exists) & \makecell[lt]{\lean{use} \expr \\ \color{gray}\lean{import Mathlib.Tactic.Use}} & \makecell[lt]{
-\lean{cases} \expr \lean{with} \\
-\lean{  | intro a b => ...}
+\lean{obtain} $\langle$\nv, \nv$\!\!\rangle$ \lean{:=} \expr
 } \\
  $\to$ (implies) & \lean{intro} \nv & \lean{apply} \expr or \lean{specialize} \nom \expr \\
  $\leftrightarrow$ (if and only if)\qquad & \lean{constructor}  & \lean{rw [}\expr\lean{]} or \lean{rw [←} \expr\lean{]}\\
  $\land$ (and) & \lean{constructor} & \makecell[lt]{
-\lean{cases} \expr \lean{with} \\
-\lean{  | intro a b => ...}
+\lean{obtain} $\langle$\nv, \nv$\!\!\rangle$ \lean{:=} \expr
 } \\
- $\lor$ (or) & \makecell[lt]{\lean{left} or \lean{right} \\ \color{gray}\lean{import Mathlib.Tactic.LeftRight}} & \makecell[lt]{
+ $\lor$ (or) & \makecell[lt]{\lean{left} or \lean{right} \\ \color{gray}\lean{import Std.Tactic.LeftRight}} & \makecell[lt]{
 \lean{cases} \expr \lean{with} \\
-\lean{  | inl a => ...} \\
-\lean{  | inr b => ...}
+\lean{  | inl }\nv \lean{=> ...} \\
+\lean{  | inr }\nv \lean{=> ...}
 } \\
  $\lnot$ (not) & \lean{intro} \nv & \lean{apply} \expr or \lean{specialize} \nom \expr  \\
   \bottomrule
