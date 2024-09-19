@@ -33,17 +33,16 @@
 
 In the following tables,
 \nom always refers to a name already known to Lean
-while \nv refers to a new name provided by the user;
-\expr designates an expression,
+while \nv is a new name provided by the user;
+\expr means an expression,
 for example the name of an object in the context,
 an arithmetic expression that is a function of such objects,
 a hypothesis in the context,
-or a lemma applied to any of these.
-When one of these words appears twice in the same line,
+or a lemma applied to any of these;
+\proposition is an expression of the type \lean{Prop} (e.g. \lean{0 < x})
+When one of these words appears twice in the same cell,
 the appearances do not designate the same name or
 the same expression.
-{\color{gray}For tactics not in the Lean 4 core, the
-necessary import is written in gray.}
 
 \begin{center}
 \setlength\tabcolsep{5mm}
@@ -52,21 +51,21 @@ necessary import is written in gray.}
   \toprule
   Logical symbol & Appears in goal & Appears in hypothesis \\
   \midrule
- $\forall$ (for all) & \lean{intro} \nv & \lean{apply} \expr or \lean{specialize} \nom \expr  \\
- $\exists$ (there exists) & \makecell[lt]{\lean{use} \expr \\ \color{gray}\lean{import Mathlib.Tactic.Use}} & \makecell[lt]{
+ $\exists$ (there exists) & \makecell[lt]{\lean{use} \expr} & \makecell[lt]{
 \lean{obtain} $\langle$\nv, \nv$\!\!\rangle$ \lean{:=} \expr
 } \\
+ $\forall$ (for all) & \lean{intro} \nv & \lean{apply} \expr or \lean{specialize} \nom \expr  \\
+ $\lnot$ (not) & \lean{intro} \nv & \lean{apply} \expr or \lean{specialize} \nom \expr  \\
  $\to$ (implies) & \lean{intro} \nv & \lean{apply} \expr or \lean{specialize} \nom \expr \\
- $\leftrightarrow$ (if and only if)\qquad & \lean{constructor}  & \lean{rw [}\expr\lean{]} or \lean{rw [←} \expr\lean{]}\\
+ $\leftrightarrow$ (if and only if)~~ & \lean{constructor}  & \lean{rw [}\expr\lean{]} or \lean{rw [←} \expr\lean{]}\\
  $\land$ (and) & \lean{constructor} & \makecell[lt]{
 \lean{obtain} $\langle$\nv, \nv$\!\!\rangle$ \lean{:=} \expr
 } \\
- $\lor$ (or) & \makecell[lt]{\lean{left} or \lean{right} \\ \color{gray}\lean{import Std.Tactic.LeftRight}} & \makecell[lt]{
+ $\lor$ (or) & \makecell[lt]{\lean{left} or \lean{right}} & \makecell[lt]{
 \lean{cases} \expr \lean{with} \\
-\lean{  | inl }\nv \lean{=> ...} \\
-\lean{  | inr }\nv \lean{=> ...}
+\lean{| inl }\nv \lean{=> ...} \\
+\lean{| inr }\nv \lean{=> ...}
 } \\
- $\lnot$ (not) & \lean{intro} \nv & \lean{apply} \expr or \lean{specialize} \nom \expr  \\
   \bottomrule
 \end{tabular}
 \end{center}
@@ -75,7 +74,6 @@ necessary import is written in gray.}
 In the left-hand column of the following table,
 the parts in parentheses are optional.
 The effect of these parts is also in parentheses in the right-hand column.
-\vspace{-3mm}
 
 \begin{center}
 \setlength\tabcolsep{5mm}
@@ -84,31 +82,33 @@ The effect of these parts is also in parentheses in the right-hand column.
   \toprule
   Tactic & Effect \\
   \midrule
-  \lean{exact} \expr & assert that the goal can be satisfied by \expr \\
-  \makecell[lt]{\lean{convert} \expr \\ \color{gray}\lean{import Mathlib.Tactic.Convert}} & prove the goal by transforming it to an existing fact \expr and create goals for propositions used in the transformation that were not proved automatically \\
-  \makecell[lt]{\lean{convert\_to} \proposition \\ \color{gray}\lean{import Mathlib.Tactic.Convert}} & transform the goal into the goal \proposition and create additional goals for propositions used in the transformation that were not proved automatically \\
-  \makecell[lt]{\lean{have} \nv : \proposition \\ \color{gray}\lean{import Mathlib.Tactic.Have}} & introduce a name \nv asserting that \proposition is true; at the same time, create and focus a goal for \proposition \\
-  \lean{unfold} \nom (\lean{at} \hyp) & unfold the definition of \nom in the goal
+  \lean{exact} \expr & the goal is satisfied by \expr \\
+  \lean{refine} \expr & similar to \lean{exact} but allows to leave any number of \lean{?\_} in the \expr to denote holes that will be filled later (creates goals) \\
+  \makecell[lt]{\lean{convert} \expr} & prove the goal by transforming it to an existing fact \expr and create goals for propositions used in the transformation that were not proved automatically \\
+  \makecell[lt]{\lean{convert\_to} \proposition} & transform the goal into the goal \proposition and create additional goals for propositions used in the transformation that were not proved automatically \\
+  \makecell[lt]{\lean{have} \nv : \proposition} & introduce a name \nv asserting that \proposition is true; at the same time, create and focus a goal for \proposition \\
+  \lean{unfold} \nom (\lean{at} \hyp) & unfold the definition \nom in the goal
   (or in the hypothesis \hyp) \\
   \lean{rw [} (\lean{←}) \expr\lean{]} (\lean{at} \hyp) & in the goal (or in the
   hypothesis \hyp), replace (all occurrences of) the left-hand side
   (or the right-hand side, if \lean{←} is present)
   of the equality or equivalence \expr by its other side \\
-  \lean{rw [} \expr\lean{,} \expr\lean{,} \expr\lean{]} (\lean{at} \hyp) & do more rewrites in the given order (again \lean{←} possible) \\
-%rewrite (parts of) the goal (or the hypothesis \hyp), using given equalities/equivalences in the given order \\
+  \lean{rw [} \expr\lean{,} \expr\lean{,} \expr\lean{]} (\lean{at} \hyp) & do more rewrites in the given order (any number of \lean{←} possible) \\
+  \lean{calc} & start a proof by calculation (uses transitivity) \\
   \lean{by\_cases} \nv : \proposition & split the proof into two cases
   depending on whether \proposition is true or false,
   using \nv as name for this hypothesis \\
-  \makecell[lt]{\lean{exfalso} \\ \color{gray}\lean{import Std.Tactic.Basic}} & apply the rule ``False implies anything'' a.k.a.~``ex falso quodlibet'' (replaces the current goal by \lean{False}) \\
-  \makecell[lt]{\lean{by\_contra} \nv \\ \color{gray}\lean{import Mathlib.Tactic.ByContra}} & start a proof by contradiction,
+  \makecell[lt]{\lean{exfalso}} & apply the rule ``False implies anything'' a.k.a.~``ex falso quodlibet'' (replaces the current goal by \lean{False}) \\
+  \makecell[lt]{\lean{by\_contra} \nv} & start a proof by contradiction,
   using \nv as name for the hypothesis that is the negation of the goal \\
-  \makecell[lt]{\lean{push\_neg} (\lean{at} \hyp) \\ \color{gray}\lean{import Mathlib.Tactic.PushNeg}} & push negations in the goal
+  \makecell[lt]{\lean{push\_neg} (\lean{at} \hyp)} & push negations in the goal
   (or in the hypothesis \hyp); e.g.~change $\neg\;\forall$ x, \proposition to $\exists$ x, $\neg\;$\proposition \\
-  \makecell[lt]{\lean{linarith} \\ \color{gray}\lean{import Mathlib.Tactic.Linarith}} & prove the goal by a linear combination of hypotheses (includes arguments based on transitivity) \\
-  \makecell[lt]{\lean{ring} \\ \color{gray}\lean{import Mathlib.Tactic.Ring}} & prove the goal by combining the axioms of a commutative (semi)ring \\
-  \makecell[lt]{\lean{simp}} & simplify the goal (or the hypothesis \hyp) by combining some standard equalities and equivalences \\
-  \makecell[lt]{\lean{exact?} \\ \color{gray}\lean{import Mathlib.Tactic.LibrarySearch}} & search for a single existing lemma which closes the goal, also using local hypotheses \\
-  %\makecell[lt]{\lean{apply?} \\ \color{gray}\lean{import Mathlib.Tactic.LibrarySearch}} & search for theorems whose conclusion matches the current goal; suggest those that may be used with \lean{apply} in the current context \\
+  \makecell[lt]{\lean{linarith}} & prove the goal by a linear combination of hypotheses \\
+  \makecell[lt]{\lean{ring}} & prove the goal by combining the axioms of a (semi)ring \\
+  \makecell[lt]{\lean{simp} (\lean{at} \hyp)} & simplify the goal (or the hypothesis \hyp) using standard equalities \\
+  \makecell[lt]{\lean{exact?}} & search for a single existing lemma which closes the goal, also using local hypotheses \\
+  \makecell[lt]{\lean{apply?}} & search for lemmas whose conclusion matches the goal; suggest those that may be used with \lean{apply} or \lean{refine} \\
+  \makecell[lt]{\lean{aesop}} & try to solve the goal using magic \\
   \bottomrule
 \end{tabular}
 \end{center}
